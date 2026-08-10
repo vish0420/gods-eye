@@ -1,0 +1,14 @@
+[project]
+name = "godseye"
+version = "0.1.0"
+description = "AI-powered multi-camera person tracking demo"
+requires-python = ">=3.10"
+dependencies = [
+  "ultralytics>=8.3.0",
+  "opencv-python>=4.10.0",
+  "numpy>=1.26.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

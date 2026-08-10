@@ -1,0 +1,56 @@
+{
+  "cameras": [
+    {
+      "camera_id": "cam1",
+      "name": "Class Room",
+      "facing": "south"
+    },
+    {
+      "camera_id": "cam2",
+      "name": "CSC Department",
+      "facing": "east"
+    },
+    {
+      "camera_id": "cam3",
+      "name": "Third Floor Hall / Stairs",
+      "facing": "south"
+    },
+    {
+      "camera_id": "cam4",
+      "name": "Ground Floor Stairs",
+      "facing": "south"
+    },
+    {"camera_id": "cam5", "name": "Ground Floor Hall / Exit", "facing": "east"},
+    {"camera_id": "cam6", "name": "Mech Building", "facing": "east"},
+    {"camera_id": "cam7", "name": "Ground", "facing": "south"},
+    {"camera_id": "cam8", "name": "Hostel Entrance", "facing": "south", "endpoint": true}
+    }
+  ],
+  "links": [
+    {
+      "from_camera": "cam1",
+      "to_camera": "cam3", "exit_zone": "unknown", "entry_zone": "unknown", "min_travel_s": 3.0, "max_travel_s": 15.0,
+      "note": "Blind spot: choose by expected arrival and appearance"
+    },
+    {
+      "from_camera": "cam1", "to_camera": "cam4", "exit_zone": "unknown", "entry_zone": "unknown", "min_travel_s": 90.0, "max_travel_s": 120.0,
+      "note": "Blind spot: choose by expected arrival and appearance"
+    },
+    {
+      "from_camera": "cam2", "to_camera": "cam3", "exit_zone": "bottom_left", "entry_zone": "unknown", "min_travel_s": 0.0, "max_travel_s": 3.0,
+      "note": "Overlapping cameras"
+    },
+    {"from_camera": "cam3", "to_camera": "cam2", "exit_zone": "top_left", "entry_zone": "unknown", "min_travel_s": 0.0, "max_travel_s": 3.0, "note": "Overlapping cameras"},
+    {"from_camera": "cam3", "to_camera": "cam4", "exit_zone": "bottom_right", "entry_zone": "unknown", "min_travel_s": 90.0, "max_travel_s": 120.0},
+    {"from_camera": "cam4", "to_camera": "cam5", "exit_zone": "bottom", "entry_zone": "unknown", "min_travel_s": 0.0, "max_travel_s": 8.0, "note": "Overlapping cameras"},
+    {"from_camera": "cam4", "to_camera": "cam3", "exit_zone": "top", "entry_zone": "unknown", "min_travel_s": 90.0, "max_travel_s": 120.0},
+    {"from_camera": "cam5", "to_camera": "cam4", "exit_zone": "top_right", "entry_zone": "unknown", "min_travel_s": 0.0, "max_travel_s": 3.0, "note": "Overlapping cameras"},
+    {"from_camera": "cam5", "to_camera": "cam6", "exit_zone": "bottom_left", "entry_zone": "unknown", "min_travel_s": 180.0, "max_travel_s": 225.0},
+    {"from_camera": "cam6", "to_camera": "cam5", "exit_zone": "top_right", "entry_zone": "unknown", "min_travel_s": 180.0, "max_travel_s": 225.0},
+    {"from_camera": "cam6", "to_camera": "cam7", "exit_zone": "bottom_left", "entry_zone": "unknown", "min_travel_s": 120.0, "max_travel_s": 150.0},
+    {"from_camera": "cam7", "to_camera": "cam6", "exit_zone": "left", "entry_zone": "unknown", "min_travel_s": 120.0, "max_travel_s": 150.0},
+    {"from_camera": "cam7", "to_camera": "cam8", "exit_zone": "bottom_right", "entry_zone": "unknown", "min_travel_s": 300.0, "max_travel_s": 360.0},
+    {"from_camera": "cam8", "to_camera": "cam7", "exit_zone": "bottom", "entry_zone": "unknown", "min_travel_s": 300.0, "max_travel_s": 360.0}
+    }
+  ]
+}
