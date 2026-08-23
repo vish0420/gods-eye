@@ -1,0 +1,18 @@
+Cross-Camera Match Report
+Source Tracks: runs\video_tracks.jsonl
+Target Tracks: runs\video_tracks.jsonl
+Source Count: 1
+Target Count: 1
+
+Source Person ID: 2
+Camera: cam1
+Exit Time: 12.5 sec
+Exit Zone: right
+
+Candidate 1: Person ID 2
+Target Camera: cam1
+Entry Time: 1.5 sec
+Entry Zone: center
+Score: 0.0%
+Decision: REJECT
+Reason: no configured camera link

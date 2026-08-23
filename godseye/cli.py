@@ -25,8 +25,12 @@ def build_parser() -> argparse.ArgumentParser:
     image_parser.add_argument("--model", default="yolo11n.pt", help="YOLO model path")
     image_parser.add_argument("--confidence", type=float, default=0.35)
     image_parser.add_argument("--device", default=None, help="Example: cpu, cuda, 0")
-    image_parser.add_argument("--out", default="runs/image_detections.jsonl")
-    image_parser.add_argument("--annotated", default=None, help="Optional annotated image path")
+    image_parser.add_argument("--out", default="result/image/image_detections.jsonl")
+    image_parser.add_argument(
+        "--annotated",
+        default="result/image/image_annotated.jpg",
+        help="Optional annotated image path",
+    )
     image_parser.set_defaults(func=run_detect_image)
 
     video_parser = subparsers.add_parser("detect-video", help="Detect people in a video")
@@ -75,7 +79,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     gallery_parser.add_argument("--video", required=True, help="Original video path")
     gallery_parser.add_argument("--detections", required=True, help="Detection JSONL from detect-video")
-    gallery_parser.add_argument("--out", default="runs/person_gallery.jpg")
+    gallery_parser.add_argument("--out", default="result/image/person_gallery.jpg")
     gallery_parser.set_defaults(func=run_person_gallery)
 
     compare_parser = subparsers.add_parser(
@@ -96,8 +100,8 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Only compare this selected person ID from the source camera.",
     )
-    compare_parser.add_argument("--out", default="runs/camera_match_report.txt")
-    compare_parser.add_argument("--json-out", default="runs/camera_match_decisions.jsonl")
+    compare_parser.add_argument("--out", default="result/video/camera_match_report.txt")
+    compare_parser.add_argument("--json-out", default="result/video/camera_match_decisions.jsonl")
     compare_parser.set_defaults(func=run_compare_cameras)
 
     return parser
@@ -161,9 +165,9 @@ def run_detect_video(args: argparse.Namespace) -> None:
 def _resolve_video_output_paths(args: argparse.Namespace) -> dict[str, str | None]:
     prefix = _clean_output_prefix(args.output_prefix or args.camera_id)
     return {
-        "detections": args.out or f"runs/{prefix}_detections.jsonl",
-        "tracks": args.tracks_out or f"runs/{prefix}_tracks.jsonl",
-        "summary": args.summary_out or f"runs/{prefix}_summary.txt",
+        "detections": args.out or f"result/video/{prefix}_detections.jsonl",
+        "tracks": args.tracks_out or f"result/video/{prefix}_tracks.jsonl",
+        "summary": args.summary_out or f"result/video/{prefix}_summary.txt",
         "annotated": args.annotated,
     }
 

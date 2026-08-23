@@ -24,7 +24,6 @@
     {"camera_id": "cam6", "name": "Mech Building", "facing": "east"},
     {"camera_id": "cam7", "name": "Ground", "facing": "south"},
     {"camera_id": "cam8", "name": "Hostel Entrance", "facing": "south", "endpoint": true}
-    }
   ],
   "links": [
     {
@@ -51,6 +50,5 @@
     {"from_camera": "cam7", "to_camera": "cam6", "exit_zone": "left", "entry_zone": "unknown", "min_travel_s": 120.0, "max_travel_s": 150.0},
     {"from_camera": "cam7", "to_camera": "cam8", "exit_zone": "bottom_right", "entry_zone": "unknown", "min_travel_s": 300.0, "max_travel_s": 360.0},
     {"from_camera": "cam8", "to_camera": "cam7", "exit_zone": "bottom", "entry_zone": "unknown", "min_travel_s": 300.0, "max_travel_s": 360.0}
-    }
   ]
 }

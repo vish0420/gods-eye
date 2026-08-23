@@ -1,0 +1,32 @@
+Camera: cam8
+Unique Persons: 3
+
+Person ID: 3
+Entered: 9.2 sec
+Exited: 15.7 sec
+Duration: 6.5 sec
+Direction: left
+Entry Zone: right
+Exit Zone: left
+Detections: 98
+Average Confidence: 0.88
+
+Person ID: 4
+Entered: 29.7 sec
+Exited: 42.1 sec
+Duration: 12.4 sec
+Direction: right
+Entry Zone: left
+Exit Zone: bottom_right
+Detections: 186
+Average Confidence: 0.86
+
+Person ID: 6
+Entered: 35.6 sec
+Exited: 47.7 sec
+Duration: 12.1 sec
+Direction: right
+Entry Zone: left
+Exit Zone: bottom_right
+Detections: 183
+Average Confidence: 0.86

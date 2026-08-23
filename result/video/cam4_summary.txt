@@ -1,0 +1,32 @@
+Camera: cam4
+Unique Persons: 3
+
+Person ID: 1
+Entered: 0.0 sec
+Exited: 7.0 sec
+Duration: 7.0 sec
+Direction: down
+Entry Zone: right
+Exit Zone: right
+Detections: 23
+Average Confidence: 0.83
+
+Person ID: 2
+Entered: 0.0 sec
+Exited: 0.4 sec
+Duration: 0.4 sec
+Direction: stationary
+Entry Zone: left
+Exit Zone: left
+Detections: 7
+Average Confidence: 0.61
+
+Person ID: 3
+Entered: 1.6 sec
+Exited: 7.0 sec
+Duration: 5.4 sec
+Direction: right
+Entry Zone: top
+Exit Zone: right
+Detections: 68
+Average Confidence: 0.89

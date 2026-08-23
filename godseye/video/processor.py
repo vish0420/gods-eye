@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from dataclasses import dataclass
 
 from godseye.detection.yolo_detector import YoloPersonDetector, draw_detections
 from godseye.domain import Detection, TrackSummary
 from godseye.storage.event_log import write_jsonl
-from godseye.tracking import SimplePersonTracker
+from godseye.tracking import SimplePersonTracker, remap_detection_ids
 
 
 @dataclass(frozen=True)
@@ -54,7 +55,7 @@ class VideoDetectionProcessor:
         last_display_detections: list[Detection] = []
         closed_by_user = False
         tracker = SimplePersonTracker(
-            iou_threshold=0.10,
+            iou_threshold=0.03,
             max_missed_frames=max(30, every_n_frames * 6),
             min_detections=min_track_detections,
             min_average_confidence=min_track_confidence,
@@ -108,9 +109,10 @@ class VideoDetectionProcessor:
             if writer is not None:
                 writer.release()
             if show:
-                cv2.destroyAllWindows()
+                _close_window_and_verify(cv2, window_name)
 
         tracks = tracker.finish(frame_width=width, frame_height=height)
+        detections = remap_detection_ids(detections, tracker.track_id_mapping)
 
         if output_jsonl is not None:
             write_jsonl(output_jsonl, detections)
@@ -154,7 +156,7 @@ def play_video(video_path: str | Path, window_name: str = "God's Eye Output") ->
                 break
     finally:
         capture.release()
-        cv2.destroyWindow(window_name)
+        _close_window_and_verify(cv2, window_name)
 
 
 def _import_cv2() -> object:
@@ -167,3 +169,23 @@ def _import_cv2() -> object:
         ) from exc
 
     return cv2
+
+
+def _close_window_and_verify(cv2: object, window_name: str, timeout_s: float = 2.0) -> None:
+    try:
+        cv2.destroyWindow(window_name)
+    except cv2.error:
+        pass
+
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        try:
+            visible = cv2.getWindowProperty(window_name, cv2.WND_PROP_VISIBLE)
+        except cv2.error:
+            return
+        if visible < 1:
+            return
+        cv2.waitKey(1)
+        time.sleep(0.05)
+
+    raise RuntimeError(f"Video window did not close cleanly: {window_name}")

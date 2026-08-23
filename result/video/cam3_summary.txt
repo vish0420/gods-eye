@@ -1,0 +1,12 @@
+Camera: cam3
+Unique Persons: 1
+
+Person ID: 1
+Entered: 0.0 sec
+Exited: 9.0 sec
+Duration: 9.0 sec
+Direction: down
+Entry Zone: center
+Exit Zone: center
+Detections: 136
+Average Confidence: 0.86

@@ -9,6 +9,7 @@ def create_person_gallery(
     video_path: str | Path,
     detections_path: str | Path,
     output_path: str | Path,
+    allowed_track_ids: set[int] | None = None,
 ) -> int:
     """Save one labelled crop for each tracked person in a recorded video."""
     import cv2
@@ -17,6 +18,8 @@ def create_person_gallery(
     for record in read_jsonl(detections_path):
         track_id = record.get("track_id")
         if track_id is None:
+            continue
+        if allowed_track_ids is not None and int(track_id) not in allowed_track_ids:
             continue
         current = best_by_id.get(int(track_id))
         if current is None or float(record["confidence"]) > float(current["confidence"]):
@@ -56,6 +59,28 @@ def create_person_gallery(
     if not cv2.imwrite(str(target), sheet):
         raise RuntimeError(f"Could not save gallery: {target}")
     return len(tiles)
+
+
+def show_person_gallery(image_path: str | Path) -> None:
+    """Open the generated gallery so the user can choose a person ID."""
+    import cv2
+
+    image = cv2.imread(str(image_path))
+    if image is None:
+        raise FileNotFoundError(f"Could not open person gallery: {image_path}")
+    cv2.namedWindow("God's Eye - Select Person ID", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("God's Eye - Select Person ID", min(1000, image.shape[1]), min(750, image.shape[0]))
+    cv2.imshow("God's Eye - Select Person ID", image)
+    print("The person gallery is open. Note the Person ID, then press any key to continue.")
+    try:
+        cv2.waitKey(0)
+    finally:
+        # Windows can close the window itself after a keypress. In that case,
+        # OpenCV raises while destroying an already closed window.
+        try:
+            cv2.destroyWindow("God's Eye - Select Person ID")
+        except cv2.error:
+            pass
 
 
 def save_track_exit_image(

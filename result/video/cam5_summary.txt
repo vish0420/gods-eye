@@ -1,0 +1,42 @@
+Camera: cam5
+Unique Persons: 4
+
+Person ID: 1
+Entered: 0.0 sec
+Exited: 16.4 sec
+Duration: 16.4 sec
+Direction: right
+Entry Zone: center
+Exit Zone: center
+Detections: 227
+Average Confidence: 0.75
+
+Person ID: 2
+Entered: 0.0 sec
+Exited: 27.0 sec
+Duration: 27.0 sec
+Direction: left
+Entry Zone: center
+Exit Zone: left
+Detections: 407
+Average Confidence: 0.80
+
+Person ID: 3
+Entered: 0.0 sec
+Exited: 11.9 sec
+Duration: 11.9 sec
+Direction: left
+Entry Zone: center
+Exit Zone: center
+Detections: 91
+Average Confidence: 0.66
+
+Person ID: 4
+Entered: 7.9 sec
+Exited: 17.2 sec
+Duration: 9.3 sec
+Direction: right
+Entry Zone: center
+Exit Zone: center
+Detections: 117
+Average Confidence: 0.67

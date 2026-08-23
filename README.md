@@ -45,26 +45,37 @@ download it.
 
 ## Run Image Detection
 
-## One-Command Guided Demo
+## Dashboard-First Demo
 
-Put recordings in `videos\cam1.mp4` through `videos\cam8.mp4`, then run:
+Put recordings in `datasets\video\cam1.mp4` through `datasets\video\cam8.mp4`, then run:
 
 ```powershell
 python main.py
 ```
 
-Enter the start camera and whether to show its tracking video. The program analyses every available camera, creates a person gallery, asks once for the person ID, then writes `runs\final_person_timeline.txt` and `runs\final_exit_person.jpg`.
+The dashboard opens with the footage list from `datasets\video`. Click one file, close the dashboard automatically, then the program analyzes footage in sequence with a live visible OpenCV window. Each run is cleaned up before the next footage starts so the player terminates cleanly.
+
+### User Guidance
+
+- Keep your source footage in `datasets/video`.
+- Start the app with `python main.py`.
+- Choose one footage file from the dashboard.
+- Wait for the dashboard to close before analysis begins.
+- Watch the live video window while the file is being analyzed.
+- When the gallery appears, choose the main target person.
+- If the same real person appears as another gallery tile, select that too in the duplicate-check window.
+- Let the player finish and close before the next footage starts.
 
 Face comparison is used when the optional `face-recognition` package can detect a clear face; body/clothing appearance remains the fallback for side views and distant people.
 
 ```powershell
-python main.py detect-image --image path\to\person.jpg --camera-id cam1 --model yolo11n.pt --out runs\image_detections.jsonl --annotated runs\image_annotated.jpg
+python main.py detect-image --image path\to\person.jpg --camera-id cam1 --model yolo11n.pt --out result\image\image_detections.jsonl --annotated result\image\image_annotated.jpg
 ```
 
 ## Run Video Detection
 
 ```powershell
-python main.py detect-video --video path\to\cam1.mp4 --camera-id cam1 --model yolo11n.pt --every 3 --out runs\cam1_detections.jsonl --annotated runs\cam1_annotated.mp4
+python main.py detect-video --video path\to\cam1.mp4 --camera-id cam1 --model yolo11n.pt --every 3 --out result\video\cam1_detections.jsonl --annotated result\video\cam1_annotated.mp4
 ```
 
 `--every 3` processes every third frame, which is better for laptops without a
@@ -74,17 +85,17 @@ The video command reports unique tracked people, not only frame detections:
 
 ```text
 Detected 1 unique person(s).
-Frame detections: 146 saved to runs/video_detections.jsonl
-Track summary: runs/video_tracks.jsonl
+Frame detections: 146 saved to result/video/video_detections.jsonl
+Track summary: result/video/video_tracks.jsonl
 ```
 
-`runs/video_tracks.jsonl` stores each person's approximate entry time, exit time,
+`result/video/video_tracks.jsonl` stores each person's approximate entry time, exit time,
 duration, direction, and first/last zone.
 
 For an exhibition/demo, show the annotated video while detection runs:
 
 ```powershell
-python main.py detect-video --video path\to\cam1.mp4 --camera-id cam1 --model yolo11n.pt --every 1 --show --hold-window --annotated runs\cam1_annotated.mp4
+python main.py detect-video --video path\to\cam1.mp4 --camera-id cam1 --model yolo11n.pt --every 1 --show --hold-window --annotated result\video\cam1_annotated.mp4
 ```
 
 Press `q` to close the video window while processing. With `--hold-window`, the
@@ -99,7 +110,7 @@ ID 1 person right 0.88
 To play a saved output video later:
 
 ```powershell
-python main.py play-video --video runs\cam1_annotated.mp4
+python main.py play-video --video result\video\cam1_annotated.mp4
 ```
 
 ## Compare Two Cameras
@@ -107,26 +118,26 @@ python main.py play-video --video runs\cam1_annotated.mp4
 Process each camera video with separate output names:
 
 ```powershell
-python main.py detect-video --video videos\cam1.mp4 --camera-id cam1 --every 3 --annotated runs\cam1_output.mp4
-python main.py detect-video --video videos\cam2.mp4 --camera-id cam2 --every 3 --annotated runs\cam2_output.mp4
+python main.py detect-video --video datasets\video\cam1.mp4 --camera-id cam1 --every 3 --annotated result\video\cam1_output.mp4
+python main.py detect-video --video datasets\video\cam2.mp4 --camera-id cam2 --every 3 --annotated result\video\cam2_output.mp4
 ```
 
 By default, output files use the camera ID:
 
 ```text
-runs/cam1_detections.jsonl
-runs/cam1_tracks.jsonl
-runs/cam1_summary.txt
+result/video/cam1_detections.jsonl
+result/video/cam1_tracks.jsonl
+result/video/cam1_summary.txt
 
-runs/cam2_detections.jsonl
-runs/cam2_tracks.jsonl
-runs/cam2_summary.txt
+result/video/cam2_detections.jsonl
+result/video/cam2_tracks.jsonl
+result/video/cam2_summary.txt
 ```
 
 Then compare the track files:
 
 ```powershell
-python main.py compare-cameras --config configs\cameras.example.json --source-tracks runs\cam1_tracks.jsonl --target-tracks runs\cam2_tracks.jsonl --out runs\cam1_cam2_match_report.txt
+python main.py compare-cameras --config configs\cameras.example.json --source-tracks result\video\cam1_tracks.jsonl --target-tracks result\video\cam2_tracks.jsonl --out result\video\cam1_cam2_match_report.txt
 ```
 
 The report uses camera flow rules, exit/entry zones, and time gap to decide:
@@ -147,7 +158,7 @@ python main.py detect-video --video path\to\cam1.mp4 --camera-id cam1 --min-trac
 For easy reading, the command also writes:
 
 ```text
-runs/video_tracks_summary.txt
+result/video/video_tracks_summary.txt
 ```
 
 Example:
@@ -183,6 +194,12 @@ godseye/
   storage/        JSONL event output
   timeline/       timeline builder
   video/          recorded-video processing
+datasets/
+  image/         still-image inputs
+  video/         recorded-video inputs
+result/
+  image/         image analysis outputs
+  video/         video analysis outputs
 configs/          example camera graph
 tests/            logic tests that do not require YOLO
 ```

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from godseye.domain import BoundingBox, Detection, Direction, TrackSummary
 from godseye.movement import infer_direction, infer_zone
@@ -40,6 +40,7 @@ class SimplePersonTracker:
         self._next_track_id = 1
         self._active: list[_ActiveTrack] = []
         self._finished: list[_ActiveTrack] = []
+        self.track_id_mapping: dict[int, int] = {}
 
     def update(
         self,
@@ -123,7 +124,9 @@ class SimplePersonTracker:
 
             summaries.append(summary)
 
-        return sorted(summaries, key=lambda item: item.track_id)
+        merged = _merge_duplicate_summaries(summaries, frame_width, frame_height)
+        self.track_id_mapping = _build_id_mapping(summaries, merged)
+        return merged
 
     def _match_detections(self, detections: list[Detection]) -> list[tuple[int, int]]:
         candidates: list[tuple[float, int, int]] = []
@@ -285,6 +288,122 @@ def _average_embedding(samples: list[tuple[float, ...]]) -> tuple[float, ...]:
     averaged = [sum(sample[index] for sample in compatible) / len(compatible) for index in range(length)]
     norm = sum(value * value for value in averaged) ** 0.5
     return tuple(value / norm for value in averaged) if norm else ()
+
+
+def _merge_duplicate_summaries(
+    summaries: list[TrackSummary],
+    frame_width: int,
+    frame_height: int,
+) -> list[TrackSummary]:
+    """Join likely ID fragments caused by a brief detector/tracker loss."""
+    pending = sorted(summaries, key=lambda item: item.entry_time_s)
+    merged: list[TrackSummary] = []
+    while pending:
+        current = pending.pop(0)
+        next_index = next(
+            (
+                index
+                for index, candidate in enumerate(pending)
+                if _should_merge_tracks(current, candidate)
+            ),
+            None,
+        )
+        if next_index is None:
+            merged.append(current)
+            continue
+        current = _combine_tracks(current, pending.pop(next_index), frame_width, frame_height)
+        pending.insert(0, current)
+    return sorted(merged, key=lambda item: item.track_id)
+
+
+def _should_merge_tracks(first: TrackSummary, second: TrackSummary) -> bool:
+    if first.camera_id != second.camera_id:
+        return False
+    # A detector can create the new ID a few frames before it retires the old one.
+    if second.entry_time_s < first.exit_time_s - 0.5:
+        return False
+    # A lost track should reappear quickly. Longer gaps may be different people.
+    if second.entry_time_s - first.exit_time_s > 6.0:
+        return False
+    face_score = _cosine_similarity(first.face_embedding, second.face_embedding)
+    appearance_score = _cosine_similarity(first.appearance_embedding, second.appearance_embedding)
+    return face_score >= 0.72 or appearance_score >= 0.92
+
+
+def _build_id_mapping(
+    original: list[TrackSummary], merged: list[TrackSummary]
+) -> dict[int, int]:
+    """Map every short-lived tracker ID to the surviving merged ID."""
+    mapping: dict[int, int] = {}
+    for track in original:
+        match = next(
+            (
+                candidate
+                for candidate in merged
+                if candidate.camera_id == track.camera_id
+                and candidate.entry_time_s <= track.entry_time_s
+                and candidate.exit_time_s >= track.exit_time_s
+            ),
+            track,
+        )
+        mapping[track.track_id] = match.track_id
+    return mapping
+
+
+def remap_detection_ids(
+    detections: list[Detection], id_mapping: dict[int, int]
+) -> list[Detection]:
+    """Apply merged IDs to every saved frame detection."""
+    return [
+        replace(item, track_id=id_mapping.get(item.track_id, item.track_id))
+        if item.track_id is not None
+        else item
+        for item in detections
+    ]
+
+
+def _cosine_similarity(first: tuple[float, ...], second: tuple[float, ...]) -> float:
+    if not first or not second or len(first) != len(second):
+        return 0.0
+    return sum(a * b for a, b in zip(first, second))
+
+
+def _combine_tracks(
+    first: TrackSummary,
+    second: TrackSummary,
+    frame_width: int,
+    frame_height: int,
+) -> TrackSummary:
+    count = first.detection_count + second.detection_count
+    confidence = (
+        (first.average_confidence * first.detection_count)
+        + (second.average_confidence * second.detection_count)
+    ) / count
+    return TrackSummary(
+        track_id=first.track_id,
+        camera_id=first.camera_id,
+        entry_time_s=first.entry_time_s,
+        exit_time_s=second.exit_time_s,
+        first_frame_index=first.first_frame_index,
+        last_frame_index=second.last_frame_index,
+        detection_count=count,
+        entry_bbox=first.entry_bbox,
+        exit_bbox=second.exit_bbox,
+        direction=infer_direction(first.entry_bbox, second.exit_bbox, frame_width, frame_height),
+        entry_zone=first.entry_zone,
+        exit_zone=second.exit_zone,
+        average_confidence=round(confidence, 4),
+        appearance_embedding=_combine_embeddings(first.appearance_embedding, second.appearance_embedding),
+        face_embedding=_combine_embeddings(first.face_embedding, second.face_embedding),
+    )
+
+
+def _combine_embeddings(first: tuple[float, ...], second: tuple[float, ...]) -> tuple[float, ...]:
+    if not first:
+        return second
+    if not second or len(first) != len(second):
+        return first
+    return _average_embedding([first, second])
 
 
 def _face_embedding(frame: object | None, bbox: BoundingBox) -> tuple[float, ...]:

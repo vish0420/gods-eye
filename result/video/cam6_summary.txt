@@ -1,0 +1,122 @@
+Camera: cam6
+Unique Persons: 12
+
+Person ID: 1
+Entered: 0.0 sec
+Exited: 38.7 sec
+Duration: 38.7 sec
+Direction: left
+Entry Zone: right
+Exit Zone: right
+Detections: 446
+Average Confidence: 0.62
+
+Person ID: 3
+Entered: 0.0 sec
+Exited: 41.5 sec
+Duration: 41.5 sec
+Direction: left
+Entry Zone: right
+Exit Zone: center
+Detections: 449
+Average Confidence: 0.62
+
+Person ID: 7
+Entered: 6.0 sec
+Exited: 42.5 sec
+Duration: 36.5 sec
+Direction: right
+Entry Zone: center
+Exit Zone: right
+Detections: 432
+Average Confidence: 0.61
+
+Person ID: 9
+Entered: 6.9 sec
+Exited: 23.3 sec
+Duration: 16.4 sec
+Direction: right
+Entry Zone: left
+Exit Zone: right
+Detections: 232
+Average Confidence: 0.73
+
+Person ID: 10
+Entered: 7.7 sec
+Exited: 25.3 sec
+Duration: 17.5 sec
+Direction: right
+Entry Zone: left
+Exit Zone: right
+Detections: 161
+Average Confidence: 0.69
+
+Person ID: 12
+Entered: 8.0 sec
+Exited: 35.1 sec
+Duration: 27.1 sec
+Direction: right
+Entry Zone: left
+Exit Zone: center
+Detections: 378
+Average Confidence: 0.72
+
+Person ID: 14
+Entered: 10.5 sec
+Exited: 12.6 sec
+Duration: 2.1 sec
+Direction: right
+Entry Zone: center
+Exit Zone: center
+Detections: 28
+Average Confidence: 0.74
+
+Person ID: 16
+Entered: 19.5 sec
+Exited: 54.3 sec
+Duration: 34.8 sec
+Direction: left
+Entry Zone: center
+Exit Zone: left
+Detections: 453
+Average Confidence: 0.70
+
+Person ID: 17
+Entered: 19.5 sec
+Exited: 43.9 sec
+Duration: 24.3 sec
+Direction: right
+Entry Zone: right
+Exit Zone: right
+Detections: 260
+Average Confidence: 0.63
+
+Person ID: 21
+Entered: 31.0 sec
+Exited: 51.4 sec
+Duration: 20.5 sec
+Direction: right
+Entry Zone: left
+Exit Zone: right
+Detections: 293
+Average Confidence: 0.82
+
+Person ID: 23
+Entered: 33.4 sec
+Exited: 50.6 sec
+Duration: 17.3 sec
+Direction: right
+Entry Zone: left
+Exit Zone: right
+Detections: 228
+Average Confidence: 0.81
+
+Person ID: 26
+Entered: 37.8 sec
+Exited: 57.2 sec
+Duration: 19.4 sec
+Direction: left
+Entry Zone: center
+Exit Zone: left
+Detections: 292
+Average Confidence: 0.81
